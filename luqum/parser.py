@@ -23,7 +23,13 @@ reserved = {
   'AND': 'AND_OP',
   'OR': 'OR_OP',
   'NOT': 'NOT',
-  'TO': 'TO'}
+  'TO': 'TO',
+  'RELATED_TO': 'RELATED_TO',
+  'RELATED_FROM': 'RELATED_FROM',
+  'RELATED': 'RELATED',
+  '*->': 'RELATED_TO',
+  '*<-': 'RELATED_FROM',
+  '*<->': 'RELATED'}
 
 
 # tokens of our grammar
@@ -40,13 +46,16 @@ tokens = (
      'LBRACKET',
      'RBRACKET'] +
     # we sort to have a deterministic order, so that gammar signature does not changes
-    sorted(list(reserved.values())))
+    sorted(list(set(reserved.values()))))
 
 
 # text of some simple tokens
 t_PLUS = r'\+'
 t_MINUS = r'\-'
 t_NOT = 'NOT'
+t_RELATED_TO = r'(RELATED_TO|\*\-\>)'
+t_RELATED_FROM = r'(RELATED_FROM|\*\<\-)'
+t_RELATED = r'(RELATED|\*\<\-\>)'
 t_AND_OP = r'AND'
 t_OR_OP = r'OR'
 t_COLUMN = r':'
@@ -195,6 +204,21 @@ def p_expression_minus(p):
 def p_expression_not(p):
     '''unary_expression : NOT unary_expression'''
     p[0] = Not(p[2])
+
+
+def p_expression_related_to(p):
+    '''unary_expression : RELATED_TO unary_expression'''
+    p[0] = RelatedTo(p[2])
+
+
+def p_expression_related_from(p):
+    '''unary_expression : RELATED_FROM unary_expression'''
+    p[0] = RelatedFrom(p[2])
+
+
+def p_expression_related(p):
+    '''unary_expression : RELATED unary_expression'''
+    p[0] = Related(p[2])
 
 
 def p_expression_unary(p):

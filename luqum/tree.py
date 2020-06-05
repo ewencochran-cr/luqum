@@ -358,6 +358,18 @@ class Not(Unary):
     op = 'NOT '
 
 
+class RelatedTo(Unary):
+    op = 'RELATED_TO '
+
+
+class RelatedFrom(Unary):
+    op = 'RELATED_FROM '
+
+
+class Related(Unary):
+    op = 'RELATED '
+
+
 class Prohibit(Unary):
     """The negation
     """
